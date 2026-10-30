@@ -50,7 +50,7 @@ function Step({ n, title, children }: { n: string; title: string; children: Reac
 function Personalizacion() {
   const { producto } = Route.useSearch();
   const navigate = useNavigate({ from: "/personalizacion" });
-  const product = PRODUCTS.find((p) => p.id === producto) ?? PRODUCTS[0];
+  const product = PRODUCTS.find((p) => p.id === producto) ?? PRODUCTS[0]!;
   const [cat, setCat] = useState<CategoryId>(product.category);
   useEffect(() => setCat(product.category), [product.category]);
 
@@ -58,7 +58,7 @@ function Personalizacion() {
   const [template, setTemplate] = useState<string | null>(null);
   const [text, setText] = useState("");
   const [textColor, setTextColor] = useState("#d9668f");
-  const [vinyl, setVinyl] = useState(VINYL[2]);
+  const [vinyl, setVinyl] = useState(VINYL[2]!);
   const [icons, setIcons] = useState<string[]>([]);
   const [qty, setQty] = useState(1);
 
