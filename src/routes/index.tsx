@@ -15,7 +15,7 @@ export const Route = createFileRoute("/")({
 });
 
 function Index() {
-  const [a, b, c, d] = CATEGORIES;
+  const [a, b, c, d] = CATEGORIES as [typeof CATEGORIES[number], typeof CATEGORIES[number], typeof CATEGORIES[number], typeof CATEGORIES[number]];
   return (
     <section className="dotted-bg relative overflow-hidden">
       <div className="mx-auto grid max-w-6xl items-center gap-12 px-4 py-14 md:grid-cols-2 md:py-20">
