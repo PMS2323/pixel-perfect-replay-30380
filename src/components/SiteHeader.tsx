@@ -2,6 +2,7 @@ import { Link } from "@tanstack/react-router";
 import { useState } from "react";
 import { Menu, X } from "lucide-react";
 import { BUSINESS } from "@/data/catalog";
+import logoAsset from "@/assets/logo.png.asset.json";
 
 const NAV = [
   { to: "/", label: "Inicio" },
@@ -12,12 +13,8 @@ const NAV = [
 
 export function Logo() {
   return (
-    <Link to="/" className="flex items-center gap-2" aria-label="Sueña y Crea, inicio">
-      <span className="grid h-11 w-11 place-items-center rounded-full bg-pink-soft text-2xl shadow-soft">✿</span>
-      <span className="leading-tight">
-        <span className="block font-display text-xl font-semibold text-primary">{BUSINESS.name}</span>
-        <span className="block text-xs font-semibold tracking-wide text-lilac">{BUSINESS.tagline}</span>
-      </span>
+    <Link to="/" className="flex items-center" aria-label="Sueña y Crea, inicio">
+      <img src={logoAsset.url} alt={`${BUSINESS.name} – ${BUSINESS.tagline}`} className="h-14 w-auto" />
     </Link>
   );
 }
