@@ -54,6 +54,8 @@ function Personalizacion() {
   const [cat, setCat] = useState<CategoryId>(product.category);
   useEffect(() => setCat(product.category), [product.category]);
 
+  const [customer, setCustomer] = useState("");
+  const [touched, setTouched] = useState(false);
   const [upload, setUpload] = useState<{ url: string; name: string } | null>(null);
   const [template, setTemplate] = useState<string | null>(null);
   const [text, setText] = useState("");
