@@ -73,8 +73,10 @@ function Personalizacion() {
   };
   const tpl = TEMPLATES.find((t) => t.name === template);
 
+  const nameOk = customer.trim().length >= 2;
   const message = [
     `¡Hola! Quiero personalizar un producto de Sueña y Crea:`,
+    `• Nombre: ${customer.trim()}`,
     `• Producto: ${product.name} (${CATEGORIES.find((c) => c.id === product.category)!.name})`,
     `• Diseño: ${upload ? `imagen propia (${upload.name}) – te la envío por aquí` : tpl ? `plantilla ${tpl.name}` : "sin imagen"}`,
     text && `• Texto: "${text}" (color ${textColor})`,
@@ -89,9 +91,18 @@ function Personalizacion() {
       <h1 className="text-center text-4xl font-bold text-primary">Personaliza tu detalle</h1>
       <p className="mt-2 text-center text-muted-foreground">Cuéntanos cómo lo imaginas y nosotros lo hacemos realidad.</p>
 
-      <div className="mt-10 grid gap-8 lg:grid-cols-[1fr_380px]">
+      <div className="mx-auto mt-10 max-w-3xl">
         <div className="space-y-6">
-          <Step n="A" title="Selecciona tu producto">
+          <Step n="A" title="¿Quién realiza el pedido?">
+            <label className="block text-sm font-semibold">Nombre de la persona que realiza el pedido
+              <input value={customer} onChange={(e) => setCustomer(e.target.value)} onBlur={() => setTouched(true)}
+                required aria-required="true" aria-invalid={touched && !nameOk} maxLength={60} placeholder="Escribe tu nombre completo" autoComplete="name"
+                className="mt-1 w-full rounded-xl border bg-background px-3 py-2 focus:outline-none focus:ring-2 focus:ring-ring" />
+            </label>
+            {touched && !nameOk && <p role="alert" className="mt-1 text-xs text-destructive">Escribe tu nombre completo para continuar.</p>}
+          </Step>
+
+          <Step n="B" title="Selecciona tu producto">
             <div className="flex flex-col gap-4 sm:flex-row">
               <img src={product.image} alt={product.name} width={1024} height={1024} className="h-32 w-32 rounded-2xl object-cover" />
               <div className="flex-1 space-y-3">
