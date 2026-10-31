@@ -54,6 +54,8 @@ function Personalizacion() {
   const [cat, setCat] = useState<CategoryId>(product.category);
   useEffect(() => setCat(product.category), [product.category]);
 
+  const [customer, setCustomer] = useState("");
+  const [touched, setTouched] = useState(false);
   const [upload, setUpload] = useState<{ url: string; name: string } | null>(null);
   const [template, setTemplate] = useState<string | null>(null);
   const [text, setText] = useState("");
@@ -71,8 +73,10 @@ function Personalizacion() {
   };
   const tpl = TEMPLATES.find((t) => t.name === template);
 
+  const nameOk = customer.trim().length >= 2;
   const message = [
     `¡Hola! Quiero personalizar un producto de Sueña y Crea:`,
+    `• Nombre: ${customer.trim()}`,
     `• Producto: ${product.name} (${CATEGORIES.find((c) => c.id === product.category)!.name})`,
     `• Diseño: ${upload ? `imagen propia (${upload.name}) – te la envío por aquí` : tpl ? `plantilla ${tpl.name}` : "sin imagen"}`,
     text && `• Texto: "${text}" (color ${textColor})`,
@@ -87,9 +91,18 @@ function Personalizacion() {
       <h1 className="text-center text-4xl font-bold text-primary">Personaliza tu detalle</h1>
       <p className="mt-2 text-center text-muted-foreground">Cuéntanos cómo lo imaginas y nosotros lo hacemos realidad.</p>
 
-      <div className="mt-10 grid gap-8 lg:grid-cols-[1fr_380px]">
+      <div className="mx-auto mt-10 max-w-3xl">
         <div className="space-y-6">
-          <Step n="A" title="Selecciona tu producto">
+          <Step n="A" title="¿Quién realiza el pedido?">
+            <label className="block text-sm font-semibold">Nombre de la persona que realiza el pedido
+              <input value={customer} onChange={(e) => setCustomer(e.target.value)} onBlur={() => setTouched(true)}
+                required aria-required="true" aria-invalid={touched && !nameOk} maxLength={60} placeholder="Escribe tu nombre completo" autoComplete="name"
+                className="mt-1 w-full rounded-xl border bg-background px-3 py-2 focus:outline-none focus:ring-2 focus:ring-ring" />
+            </label>
+            {touched && !nameOk && <p role="alert" className="mt-1 text-xs text-destructive">Escribe tu nombre completo para continuar.</p>}
+          </Step>
+
+          <Step n="B" title="Selecciona tu producto">
             <div className="flex flex-col gap-4 sm:flex-row">
               <img src={product.image} alt={product.name} width={1024} height={1024} className="h-32 w-32 rounded-2xl object-cover" />
               <div className="flex-1 space-y-3">
@@ -109,7 +122,7 @@ function Personalizacion() {
             </div>
           </Step>
 
-          <Step n="B" title="Sube tu diseño o elige una plantilla">
+          <Step n="C" title="Sube tu diseño o elige una plantilla">
             <div className="flex flex-wrap items-center gap-3">
               <label className={btnCls({ variant: "soft", size: "sm", className: "cursor-pointer" })}>
                 <Upload className="h-4 w-4" /> Subir imagen
@@ -133,7 +146,7 @@ function Personalizacion() {
             </div>
           </Step>
 
-          <Step n="C" title="Personaliza tu diseño">
+          <Step n="D" title="Personaliza tu diseño">
             <label className="block text-sm font-semibold">Escribe el texto que deseas incluir
               <input value={text} onChange={(e) => setText(e.target.value)} maxLength={40} placeholder="Ej. Sofía 8 años"
                 className="mt-1 w-full rounded-xl border bg-background px-3 py-2" />
@@ -158,7 +171,7 @@ function Personalizacion() {
             </div>
           </Step>
 
-          <Step n="D" title="Cantidad de productos">
+          <Step n="E" title="Cantidad de productos">
             <div className="flex flex-wrap items-center gap-6">
               <div className="flex items-center gap-2">
                 <button type="button" aria-label="Disminuir cantidad" onClick={() => setQty((q) => Math.max(1, q - 1))} className="grid h-10 w-10 place-items-center rounded-full bg-secondary"><Minus className="h-4 w-4" /></button>
@@ -170,32 +183,24 @@ function Personalizacion() {
             </div>
           </Step>
 
-          <Step n="E" title="Indicaciones del pedido">
+          <Step n="F" title="Indicaciones del pedido">
             <p className="rounded-2xl bg-pink-soft p-4 font-semibold text-accent-foreground">
               Recuerda: después de personalizar tu detalle, contáctanos para recibir las indicaciones del pago y confirmar la fecha de entrega.
             </p>
-            <a href={waLink(message)} target="_blank" rel="noopener noreferrer" className={btnCls({ variant: "whatsapp", className: "mt-4" })}>
-              <WhatsAppIcon /> Enviar solicitud por WhatsApp
-            </a>
+            {nameOk ? (
+              <a href={waLink(message)} target="_blank" rel="noopener noreferrer" className={btnCls({ variant: "whatsapp", className: "mt-4" })}>
+                <WhatsAppIcon /> Enviar solicitud por WhatsApp
+              </a>
+            ) : (
+              <button type="button" onClick={() => setTouched(true)}
+                className={btnCls({ variant: "whatsapp", className: "mt-4 cursor-not-allowed opacity-60" })}>
+                <WhatsAppIcon /> Enviar solicitud por WhatsApp
+              </button>
+            )}
+            {!nameOk && <p className="mt-2 text-xs text-muted-foreground">Escribe tu nombre en el paso A para enviar tu solicitud.</p>}
             {upload && <p className="mt-2 text-xs text-muted-foreground">Al abrir WhatsApp, adjunta tu imagen en la conversación.</p>}
           </Step>
         </div>
-
-        <aside className="lg:sticky lg:top-24 h-fit rounded-3xl border bg-card p-6 shadow-soft">
-          <h2 className="text-xl font-semibold">Vista previa</h2>
-          <div className="relative mt-4 aspect-square overflow-hidden rounded-2xl bg-muted">
-            <img src={product.image} alt="" width={1024} height={1024} className="h-full w-full object-cover opacity-40" />
-            <div className="absolute inset-0 flex flex-col items-center justify-center gap-2 p-6 text-center">
-              {upload && <img src={upload.url} alt="Tu diseño" className="max-h-32 max-w-[70%] rounded-xl object-contain" />}
-              {tpl && <span className="text-6xl">{tpl.icon}</span>}
-              {text && <span className="font-display text-3xl font-bold break-words" style={{ color: textColor }}>{text}</span>}
-              {icons.length > 0 && <span className="text-2xl">{icons.join(" ")}</span>}
-              {!upload && !tpl && !text && !icons.length && <span className="text-sm text-muted-foreground">Tu diseño aparecerá aquí</span>}
-            </div>
-            <span className="absolute bottom-3 right-3 h-6 w-6 rounded-full border-2 border-background" style={{ background: vinyl.v }} title={`Vinil ${vinyl.name}`} />
-          </div>
-          <p className="mt-3 text-xs text-muted-foreground">Vista previa aproximada; afinamos los detalles contigo.</p>
-        </aside>
       </div>
     </section>
   );

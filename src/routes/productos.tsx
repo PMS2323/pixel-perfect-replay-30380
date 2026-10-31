@@ -47,13 +47,12 @@ function Productos() {
     <section className="mx-auto max-w-6xl px-4 py-14">
       <h1 className="text-center text-4xl font-bold text-primary">Nuestros productos</h1>
       <p className="mt-2 text-center text-muted-foreground">Elige una categoría para ver sus productos.</p>
-      <div className="mt-10 grid grid-cols-2 gap-4 md:grid-cols-4">
+      <div className="mt-10 grid grid-cols-2 gap-4 md:grid-cols-4" role="group" aria-label="Categorías">
         {CATEGORIES.map((c) => (
           <Link key={c.id} to="/productos" search={{ cat: c.id }} resetScroll={false}
             aria-pressed={c.id === active}
-            className={cn("lift overflow-hidden rounded-3xl border-2 text-center", c.tone, c.id === active ? "border-primary shadow-lift" : "border-transparent")}>
-            <img src={c.image} alt="" width={1024} height={1024} loading="lazy" className="aspect-[4/3] w-full object-cover" />
-            <span className="block px-3 py-3 font-display font-semibold">{c.name}</span>
+            className={cn("lift rounded-full border-2 px-4 py-3 text-center font-display font-semibold", c.tone, c.id === active ? "border-primary text-primary shadow-lift" : "border-transparent text-foreground/80")}>
+            {c.name}
           </Link>
         ))}
       </div>
